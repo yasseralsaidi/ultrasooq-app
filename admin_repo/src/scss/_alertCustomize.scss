@@ -1,0 +1,223 @@
+.css-cpgvjg-MuiSnackbar-root,
+.css-qwe366 {
+    right: 24px !important;
+    left: auto !important;
+}
+
+.css-1hcy0qv-MuiPaper-root-MuiAlert-root,
+.css-1r9xaly {
+    background-color: #667cff !important;
+    border-left: 5px solid #022335 !important;
+}
+
+// start: custom-ui-alert-popup
+
+
+.custom-ui-alert-popup {
+    width: calc(100% - 8px);
+    max-width: 520px;
+    min-width: 320px;
+    padding: 16px 0;
+    border: 1px solid;
+    border-left: 5px solid;
+    font-family: inherit;
+    background: #fff;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    z-index: 99999 !important;
+
+    &:not(.show) {
+        display: none;
+    }
+
+    &.size-420px {
+        max-width: 420px;
+    }
+
+    @media (max-width: 420px) {
+        min-width: 300px;
+    }
+
+    .alert-popup-headerpart {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 34px;
+
+        @media (max-width: 575px) {
+            padding: 0 28px 0 16px;
+        }
+
+        h1 {
+            font-size: 18px;
+            color: inherit;
+            font-weight: bold;
+        }
+
+        .alert-popup-close {
+            position: absolute;
+            right: 11px;
+            font-size: 13px;
+            font-family: "Euclid Circular A";
+            font-weight: bold;
+            top: 8px;
+            color: inherit;
+            cursor: pointer;
+            background-color: transparent;
+        }
+    }
+
+    .alert-popup-bodypart {
+        padding: 16px 34px 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-height: 380px;
+
+        @media (max-width: 575px) {
+            padding: 16px 16px 0;
+        }
+
+        h4 {
+            font-size: 16px;
+        }
+
+        .ul-default-list-style {
+            padding: 0 0 0 18px;
+        }
+
+        p {
+            color: inherit;
+        }
+    }
+
+    .alert-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin: -4px;
+        padding: 16px 34px 0;
+
+        @media (max-width: 575px) {
+            padding: 16px 16px 0;
+        }
+
+        .alert-actions-col {
+            padding: 4px;
+        }
+
+        button {
+            border-radius: 4px;
+            background: transparent;
+            padding: 6px 15px;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: 0.3s;
+
+            @media (max-width: 575px) {
+                padding: 5px 8px;
+            }
+
+            &:hover {
+                box-shadow: 1px 2px 3px #626161;
+            }
+        }
+
+        .alert--cancel-btn {
+            color: #000;
+        }
+
+        .alert--submit-btn {
+            background: #000;
+            color: #fff;
+        }
+
+        .csutom-btn-gray {
+            background: #e9e9e9 !important;
+            color: #000 !important;
+
+            &:hover {
+                color: #000 !important;
+            }
+        }
+    }
+
+    &.default-alert-popup {
+        border-color: #5168f4;
+        color: #5168f4;
+
+        .alert-popup-headerpart {
+            color: #5168f4;
+        }
+
+        .alert-actions {
+            .alert--cancel-btn {
+                color: #5168f4;
+            }
+
+            .alert--submit-btn {
+                background: #5168f4;
+            }
+        }
+    }
+
+    &.danger-alert-popup {
+        border-color: #db3141;
+        color: #db3141;
+
+        .alert-popup-headerpart {
+            color: #db3141;
+        }
+
+        .alert-actions {
+            .alert--cancel-btn {
+                color: #db3141;
+            }
+
+            .alert--submit-btn {
+                background: #db3141;
+            }
+        }
+    }
+
+    &.success-alert-popup {
+        border-color: #019901;
+        color: #019901;
+
+        .alert-popup-headerpart {
+            color: #019901;
+        }
+
+        .alert-actions {
+            .alert--cancel-btn {
+                color: #019901;
+            }
+
+            .alert--submit-btn {
+                background: #019901;
+            }
+        }
+    }
+
+    &.customize-s2 {
+        box-shadow: 2px 3px 11px 1px #576ef7;
+        border: 0;
+        border-left: 5px solid;
+
+        .alert-popup-headerpart h1 {
+            font-weight: 500;
+        }
+
+    }
+}
+.react-confirm-alert-overlay {
+    background: #667cff4a !important;
+    z-index: 9999 !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+// end: custom-ui-alert-popup

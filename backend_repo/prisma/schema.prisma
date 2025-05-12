@@ -1,0 +1,1865 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Permission {
+  id                 Int                  @id @default(autoincrement())
+  name               String?
+  addedBy            Int?
+  status             Status               @default(ACTIVE)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime?            @updatedAt
+  deletedAt          DateTime?
+  userRolePermission UserRolePermission[]
+}
+
+model User {
+  id                                   Int                           @id @default(autoincrement())
+  email                                String                        @unique
+  firstName                            String?
+  lastName                             String?
+  createdAt                            DateTime                      @default(now())
+  deletedAt                            DateTime?
+  updatedAt                            DateTime?                     @updatedAt
+  cc                                   String?
+  dateOfBirth                          DateTime?
+  gender                               Gender?                       @default(MALE)
+  otp                                  Int?
+  otpValidTime                         DateTime?
+  password                             String?
+  phoneNumber                          String?
+  profilePicture                       String?
+  resetPassword                        Int                           @default(0)
+  status                               Status                        @default(INACTIVE)
+  tradeRole                            TypeTrader                    @default(BUYER)
+  uniqueId                             String?
+  identityProof                        String?
+  onlineOffline                        String?
+  onlineOfflineDateStatus              DateTime?
+  identityProofBack                    String?
+  userType                             UserType?
+  loginType                            LoginType                     @default(MANUAL)
+  userName                             String?
+  employeeId                           String?
+  userRoleId                           Int?
+  userRoleName                         String?
+  customerId                           String?
+  stripeAccountId                      String?
+  addedBy                              Int?
+  adminRoleId                          Int?
+  adminMember                          AdminMember[]                 @relation("subAdmin")
+  cartDetails                          Cart[]
+  helCenterUserDetail                  HelpCenter[]                  @relation("helpCenterUserDetail")
+  messages                             Message[]                     @relation("UserMessages")
+  user_orderProductsSeller             OrderProducts[]               @relation("OrderProductsSeller")
+  adminProduct                         Product[]                     @relation("ProductAdmin")
+  userProduct                          Product[]                     @relation("ProductUser")
+  user_producPrice                     ProductPrice[]                @relation("ProductPriceUser")
+  user_producPriceReview               ProductPriceReview[]          @relation("ProductPriceReviewUser")
+  user_productAnswerUser               ProductQuestion[]             @relation("ProductAnswerUser")
+  productQuesion                       ProductQuestion[]             @relation("questionByUser")
+  productQuestionAnswer                ProductQuestionAnswer[]       @relation("answerByUser")
+  user_productReview                   ProductReview[]               @relation("ProductReviewUser")
+  approved_rfq_product_Price_requests  RfqQuoteProductPriceRequest[] @relation("approvedByUser")
+  rfq_product_price_buyer_requests     RfqQuoteProductPriceRequest[] @relation("requestedBuyer")
+  rejected_rfq_product_Price_requests  RfqQuoteProductPriceRequest[] @relation("rejectedByUser")
+  requested_rfq_product_Price_requests RfqQuoteProductPriceRequest[] @relation("requestedByUser")
+  rfq_product_price_seller_requests    RfqQuoteProductPriceRequest[] @relation("requestedSeller")
+  user_rfqQuotesUserBuyer              RfqQuotesUsers[]              @relation("RfqQuotesUserBuyer")
+  user_rfqQuotesUserSeller             RfqQuotesUsers[]              @relation("RfqQuotesUserSeller")
+  createdRooms                         Room[]                        @relation("CreatedRooms")
+  rooms                                RoomParticipants[]            @relation("UserRooms")
+  sharedLink                           SharedLink[]                  @relation("linkGeneratorDetail")
+  teamMemberDetail                     TeamMember[]
+  adminRoleDetail                      AdminRole?                    @relation(fields: [adminRoleId], references: [id])
+  userRoleDetail                       UserRole?                     @relation(fields: [userRoleId], references: [id])
+  UserAddress                          UserAddress[]
+  userBranch                           UserBranch[]
+  userPhone                            UserPhone[]
+  userProfile                          UserProfile[]
+  userProfileBusinessType              UserProfileBusinessType[]
+  userSocialLink                       UserSocialLink[]
+  services                             Service[]
+}
+
+model UserRole {
+  id                 Int                  @id @default(autoincrement())
+  userRoleName       String?
+  addedBy            Int?
+  status             Status               @default(ACTIVE)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime?            @updatedAt
+  deletedAt          DateTime?
+  teamMemberDetail   TeamMember[]
+  user               User[]
+  userRolePermission UserRolePermission[]
+}
+
+model UserRolePermission {
+  id               Int         @id @default(autoincrement())
+  userRoleId       Int?
+  permissionId     Int?
+  status           Status      @default(ACTIVE)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime?   @updatedAt
+  deletedAt        DateTime?
+  permissionDetail Permission? @relation(fields: [permissionId], references: [id])
+  userRoleDetail   UserRole?   @relation(fields: [userRoleId], references: [id])
+}
+
+model UserAddress {
+  id            Int        @id @default(autoincrement())
+  status        Status     @default(ACTIVE)
+  address       String?
+  city          String?
+  province      String?
+  country       String?
+  postCode      String?
+  deletedAt     DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  userId        Int?
+  cc            String?
+  firstName     String?
+  lastName      String?
+  phoneNumber   String?
+  cityId        Int?
+  countryId     Int?
+  stateId       Int?
+  town          String?
+  cityDetail    Cities?    @relation(fields: [cityId], references: [id])
+  countryDetail Countries? @relation(fields: [countryId], references: [id])
+  stateDetail   States?    @relation(fields: [stateId], references: [id])
+  userDetail    User?      @relation(fields: [userId], references: [id])
+}
+
+model UserPhone {
+  id          Int       @id @default(autoincrement())
+  phoneNumber String
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  status      Status    @default(ACTIVE)
+  userId      Int
+  cc          String?
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model UserSocialLink {
+  id        Int       @id @default(autoincrement())
+  linkType  String?
+  link      String?
+  status    Int?      @default(1)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model UserProfile {
+  id                      Int                       @id @default(autoincrement())
+  profileType             String
+  logo                    String?
+  companyName             String?
+  aboutUs                 String?
+  address                 String?
+  city                    String?
+  province                String?
+  country                 String?
+  yearOfEstablishment     Int?
+  totalNoOfEmployee       String?
+  status                  Status                    @default(ACTIVE)
+  deletedAt               DateTime?
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  userId                  Int
+  annualPurchasingVolume  String?
+  cc                      String?
+  phoneNumber             String?
+  user                    User                      @relation(fields: [userId], references: [id])
+  userProfileBusinessType UserProfileBusinessType[]
+}
+
+model UserProfileBusinessType {
+  id                         Int         @id @default(autoincrement())
+  status                     Status      @default(ACTIVE)
+  deletedAt                  DateTime?
+  createdAt                  DateTime    @default(now())
+  updatedAt                  DateTime    @updatedAt
+  userId                     Int
+  userProfileId              Int
+  businessTypeId             Int
+  userProfileBusinessTypeTag Tags        @relation(fields: [businessTypeId], references: [id])
+  userDetail                 User        @relation(fields: [userId], references: [id])
+  userProfileBusinessType    UserProfile @relation(fields: [userProfileId], references: [id])
+}
+
+model UserBranch {
+  id                            Int                      @id @default(autoincrement())
+  userProfileId                 Int
+  mainOffice                    Int?
+  profileType                   String
+  branchFrontPicture            String?
+  proofOfAddress                String?
+  address                       String?
+  city                          String?
+  province                      String?
+  country                       String?
+  contactNumber                 String?
+  contactName                   String?
+  startTime                     String?
+  endTime                       String?
+  workingDays                   String?
+  status                        Status                   @default(ACTIVE)
+  deletedAt                     DateTime?
+  createdAt                     DateTime                 @default(now())
+  updatedAt                     DateTime                 @updatedAt
+  userId                        Int
+  cc                            String?
+  user                          User                     @relation(fields: [userId], references: [id])
+  userBranchBusinessType        UserBranchBusinessType[]
+  userBranch_userBranchCategory UserBranchCategory[]
+  userBranchTags                UserBranchTags[]
+}
+
+model UserBranchBusinessType {
+  id                          Int        @id @default(autoincrement())
+  userId                      Int
+  businessTypeId              Int
+  status                      Status     @default(ACTIVE)
+  deletedAt                   DateTime?
+  createdAt                   DateTime   @default(now())
+  updatedAt                   DateTime   @updatedAt
+  userBranchId                Int
+  userBranch_BusinessType_Tag Tags       @relation(fields: [businessTypeId], references: [id])
+  userBranch                  UserBranch @relation(fields: [userBranchId], references: [id])
+}
+
+model UserBranchTags {
+  id                Int        @id @default(autoincrement())
+  userId            Int
+  status            Status     @default(ACTIVE)
+  deletedAt         DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  userBranchId      Int
+  tagId             Int
+  userBranchTagsTag Tags       @relation(fields: [tagId], references: [id])
+  userBranch        UserBranch @relation(fields: [userBranchId], references: [id])
+}
+
+model UserBranchCategory {
+  id                          Int         @id @default(autoincrement())
+  userId                      Int?
+  userBranchId                Int?
+  categoryId                  Int?
+  categoryLocation            String?
+  status                      Status      @default(ACTIVE)
+  deletedAt                   DateTime?
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
+  userBranchCategory_category Category?   @relation(fields: [categoryId], references: [id])
+  userBranch                  UserBranch? @relation(fields: [userBranchId], references: [id])
+}
+
+model TeamMember {
+  id            Int       @id @default(autoincrement())
+  userId        Int?
+  userRoleId    Int?
+  addedBy       Int?
+  status        Status    @default(ACTIVE)
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  userDetail    User?     @relation(fields: [userId], references: [id])
+  userRolDetail UserRole? @relation(fields: [userRoleId], references: [id])
+}
+
+model Tags {
+  id                       Int                       @id @default(autoincrement())
+  tagName                  String
+  status                   Status                    @default(ACTIVE)
+  deletedAt                DateTime?
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+  addedBy                  Int?
+  tagProductTags           ProductTags[]
+  userBranchBusinessType   UserBranchBusinessType[]
+  userBranchTags           UserBranchTags[]
+  userProfileBusinessTypes UserProfileBusinessType[]
+  serviceTags              ServiceTag[]
+}
+
+model Category {
+  id                               Int                     @id @default(autoincrement())
+  name                             String
+  menuId                           Int?
+  status                           Status                  @default(ACTIVE)
+  type                             String?
+  deletedAt                        DateTime?
+  createdAt                        DateTime                @default(now())
+  updatedAt                        DateTime                @updatedAt
+  parentId                         Int?
+  blackList                        StatusYesNO             @default(NO)
+  whiteList                        StatusYesNO             @default(NO)
+  assignTo                         Int?
+  icon                             String?
+  connectTo                        Int?
+  customer                         Int?
+  policy                           Int?
+  rfq                              Int?
+  store                            Int?
+  categoryCustomer_fees            Fees?                   @relation("CategoryCustomer", fields: [customer], references: [id])
+  menuParent                       Category?               @relation("MenuParentChild", fields: [menuId], references: [id])
+  menuChild                        Category[]              @relation("MenuParentChild")
+  parent                           Category?               @relation("ParentChild", fields: [parentId], references: [id])
+  children                         Category[]              @relation("ParentChild")
+  category_policy                  policy?                 @relation(fields: [policy], references: [id])
+  categoryRfq_fees                 Fees?                   @relation("CategoryRfq", fields: [rfq], references: [id])
+  categoryStore_fees               Fees?                   @relation("CategoryStore", fields: [store], references: [id])
+  category_categoryIdDetail        CategoryConnectTo[]     @relation("CategoryDetail")
+  category_categoryConnectToDetail CategoryConnectTo[]     @relation("ConnectToDetail")
+  category_dynamicFormCategory     DynamicFormCategory[]
+  category_Fees                    Fees[]                  @relation("menuDetail")
+  category_feesCategoryConnectTo   FeesCategoryConnectTo[]
+  categoryProducts                 Product[]
+  category_productPrice            ProductPrice[]          @relation("menuDetailInProductPrice")
+  category_userBranchCategory      UserBranchCategory[]
+  categoryServices                 Service[]
+}
+
+model CategoryConnectTo {
+  id                         Int       @id @default(autoincrement())
+  categoryId                 Int?
+  categoryLocation           String?
+  status                     Status    @default(ACTIVE)
+  deletedAt                  DateTime?
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+  connectTo                  Int?
+  connectToLocation          String?
+  connectToType              String?
+  categoryConnectTo_category Category? @relation("CategoryDetail", fields: [categoryId], references: [id])
+  connectToDetail            Category? @relation("ConnectToDetail", fields: [connectTo], references: [id])
+}
+
+model Fees {
+  id                         Int                     @id @default(autoincrement())
+  feeName                    String?
+  feeDescription             String?
+  status                     Status                  @default(ACTIVE)
+  deletedAt                  DateTime?
+  createdAt                  DateTime                @default(now())
+  updatedAt                  DateTime                @updatedAt
+  policyId                   Int?
+  feeType                    String?
+  menuId                     Int?
+  fees_categoryCustome       Category[]              @relation("CategoryCustomer")
+  fees_categoryRfq           Category[]              @relation("CategoryRfq")
+  fees_categoryStore         Category[]              @relation("CategoryStore")
+  menuDetail                 Category?               @relation("menuDetail", fields: [menuId], references: [id])
+  fees_policy                policy?                 @relation(fields: [policyId], references: [id])
+  fees_feesCategoryConnectTo FeesCategoryConnectTo[]
+  fees_feesCountry           FeesCountry[]
+  feesDetails                FeesDetail[]
+  feesToFeesDetail           FeesToFeesDetail[]      @relation("fees")
+}
+
+model FeesDetail {
+  id                     Int                @id @default(autoincrement())
+  feeId                  Int?
+  feesType               String?
+  isVendorGlobal         Boolean?
+  isConsumerGlobal       Boolean?
+  vendorPercentage       Decimal?
+  vendorMaxCapPerDeal    Decimal?
+  vendorVat              Decimal?
+  vendorPaymentGateFee   Decimal?
+  vendorFixFee           Decimal?
+  vendorMaxCapPerMonth   Boolean?
+  vendorLocationId       Int?
+  consumerPercentage     Decimal?
+  consumerMaxCapPerDeal  Decimal?
+  consumerVat            Decimal?
+  consumerPaymentGateFee Decimal?
+  consumerFixFee         Decimal?
+  consumerMaxCapPerMonth Boolean?
+  consumerLocationId     Int?
+  status                 Status             @default(ACTIVE)
+  deletedAt              DateTime?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+  consumerLocation       FeesLocation?      @relation("consumerLocation", fields: [consumerLocationId], references: [id])
+  feesDetail_fees        Fees?              @relation(fields: [feeId], references: [id])
+  vendorLocation         FeesLocation?      @relation("vendorLocation", fields: [vendorLocationId], references: [id])
+  feesDetailConsumer     FeesToFeesDetail[] @relation("consumerDetail")
+  feesDetailVendor       FeesToFeesDetail[] @relation("vendorDetail")
+}
+
+model FeesToFeesDetail {
+  id                    Int         @id @default(autoincrement())
+  feeId                 Int?
+  vendorDetailId        Int?
+  consumerDetailId      Int?
+  status                Status      @default(ACTIVE)
+  deletedAt             DateTime?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  consumerDetail        FeesDetail? @relation("consumerDetail", fields: [consumerDetailId], references: [id])
+  fees_feesToFeesDetail Fees?       @relation("fees", fields: [feeId], references: [id])
+  vendorDetail          FeesDetail? @relation("vendorDetail", fields: [vendorDetailId], references: [id])
+}
+
+model FeesLocation {
+  id                   Int          @id @default(autoincrement())
+  countryId            Int?
+  stateId              Int?
+  cityId               Int?
+  town                 String?
+  status               Status       @default(ACTIVE)
+  deletedAt            DateTime?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  feeId                Int?
+  feeLocationType      String?
+  consumerFeesDetails  FeesDetail[] @relation("consumerLocation")
+  vendorFeesDetails    FeesDetail[] @relation("vendorLocation")
+  feesLocation_city    Cities?      @relation(fields: [cityId], references: [id])
+  feesLocation_country Countries?   @relation(fields: [countryId], references: [id])
+  feesLocation_state   States?      @relation(fields: [stateId], references: [id])
+}
+
+model FeesCountry {
+  id                    Int         @id @default(autoincrement())
+  feeId                 Int?
+  status                Status      @default(ACTIVE)
+  deletedAt             DateTime?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  countryId             Int?
+  feesCountry_country   Countries?  @relation(fields: [countryId], references: [id])
+  feesCountry_fees      Fees?       @relation(fields: [feeId], references: [id])
+  feesCountry_feesState FeesState[]
+}
+
+model FeesState {
+  id                    Int          @id @default(autoincrement())
+  feeId                 Int?
+  feesCountryId         Int?
+  stateId               Int?
+  status                Status       @default(ACTIVE)
+  deletedAt             DateTime?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  countryId             Int?
+  feesState_feesCity    FeesCity[]
+  feesState_feesCountry FeesCountry? @relation(fields: [feesCountryId], references: [id])
+  feesState_state       States?      @relation(fields: [stateId], references: [id])
+}
+
+model FeesCity {
+  id                 Int        @id @default(autoincrement())
+  feeId              Int?
+  feesCountryId      Int?
+  cityId             Int?
+  status             Status     @default(ACTIVE)
+  deletedAt          DateTime?
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  feesStateId        Int?
+  countryId          Int?
+  stateId            Int?
+  feesCity_city      Cities?    @relation(fields: [cityId], references: [id])
+  feesCity_feesState FeesState? @relation(fields: [feesStateId], references: [id])
+  feesCity_feesTown  FeesTown[]
+}
+
+model FeesTown {
+  id                Int       @id @default(autoincrement())
+  feeId             Int?
+  feesCountryId     Int?
+  feesStateId       Int?
+  feesCityId        Int?
+  town              String?
+  status            Status    @default(ACTIVE)
+  deletedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  cityId            Int?
+  countryId         Int?
+  stateId           Int?
+  feesTown_feesCity FeesCity? @relation(fields: [feesCityId], references: [id])
+}
+
+model FeesCategoryConnectTo {
+  id                         Int       @id @default(autoincrement())
+  feeId                      Int?
+  categoryId                 Int?
+  categoryLocation           String?
+  status                     Status    @default(ACTIVE)
+  deletedAt                  DateTime?
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+  feesCountryId              Int?
+  categoryDetail             Category? @relation(fields: [categoryId], references: [id])
+  feesCategoryConnectTo_fees Fees?     @relation(fields: [feeId], references: [id])
+}
+
+model policy {
+  id              Int        @id @default(autoincrement())
+  ruleName        String?
+  rule            String?
+  status          Status     @default(ACTIVE)
+  deletedAt       DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  categoryName    String?
+  parentId        Int?
+  policy_category Category[]
+  policy_fees     Fees[]
+  parent          policy?    @relation("ParentChild", fields: [parentId], references: [id])
+  children        policy[]   @relation("ParentChild")
+}
+
+model Product {
+  id                              Int                       @id @default(autoincrement())
+  productName                     String
+  categoryId                      Int?
+  skuNo                           String                    @unique
+  productPrice                    Decimal                   @db.Decimal(8, 2)
+  offerPrice                      Decimal                   @db.Decimal(8, 2)
+  description                     String?
+  specification                   String?
+  status                          Status                    @default(INACTIVE)
+  deletedAt                       DateTime?
+  createdAt                       DateTime                  @default(now())
+  updatedAt                       DateTime                  @updatedAt
+  brandId                         Int?
+  placeOfOriginId                 Int?
+  adminId                         Int?
+  userId                          Int?
+  categoryLocation                String?
+  shortDescription                String?
+  productType                     ProductType?
+  barcode                         String?
+  typeOfProduct                   TypeOfProduct?
+  typeProduct                     TypeProduct?
+  cart                            Cart[]
+  product_customizeProduct        CustomizeProduct[]
+  factoriesCartDetail             FactoriesCart[]
+  orderProducts                   OrderProducts[]
+  adminBy                         User?                     @relation("ProductAdmin", fields: [adminId], references: [id])
+  brand                           Brand?                    @relation(fields: [brandId], references: [id])
+  category                        Category?                 @relation(fields: [categoryId], references: [id])
+  placeOfOrigin                   CountryList?              @relation(fields: [placeOfOriginId], references: [id])
+  userBy                          User?                     @relation("ProductUser", fields: [userId], references: [id])
+  productImages                   ProductImages[]
+  product_productPrice            ProductPrice[]
+  productReview                   ProductReview[]
+  product_sellCity                ProductSellCity[]
+  product_sellCountry             ProductSellCountry[]
+  product_sellState               ProductSellState[]
+  product_productShortDescription ProductShortDescription[]
+  product_productSpecification    ProductSpecification[]
+  productTags                     ProductTags[]
+  product_rfqCart                 RFQCart[]
+  rfqProduct                      RFQProduct[]
+  product_rfqQuotesProducts       RfqQuotesProducts[]
+  sellerRewardDetail              SellerReward[]
+  sharedLink                      SharedLink[]
+  product_wishlist                Wishlist[]
+  cartProductServices             CartProductService[]
+  orderProductServices            OrderProductService[]
+}
+
+model ProductPrice {
+  id                              Int                  @id @default(autoincrement())
+  productId                       Int?
+  adminId                         Int?
+  productPrice                    Decimal              @db.Decimal(8, 2)
+  offerPrice                      Decimal              @db.Decimal(8, 2)
+  productPriceBarcode             String?
+  status                          Status               @default(ACTIVE)
+  deletedAt                       DateTime?
+  createdAt                       DateTime             @default(now())
+  updatedAt                       DateTime             @updatedAt
+  consumerDiscount                Int?
+  consumerType                    ConsumerType?
+  deliveryAfter                   Int?
+  maxQuantity                     Int?
+  minQuantity                     Int?
+  sellType                        SellType?
+  stock                           Int?
+  timeClose                       Int?
+  timeOpen                        Int?
+  vendorDiscount                  Int?
+  productCondition                String?
+  maxCustomer                     Int?
+  maxQuantityPerCustomer          Int?
+  minCustomer                     Int?
+  minQuantityPerCustomer          Int?
+  askForPrice                     String?
+  askForStock                     String?
+  consumerDiscountType            String?
+  vendorDiscountType              String?
+  dateClose                       DateTime?
+  dateOpen                        DateTime?
+  endTime                         String?
+  startTime                       String?
+  isCustomProduct                 String?
+  productCityId                   Int?
+  productCountryId                Int?
+  productStateId                  Int?
+  productTown                     String?
+  productLatLng                   String?
+  menuId                          Int?
+  productPrice_cart               Cart[]
+  productPrice_orderProducts      OrderProducts[]
+  adminDetail                     User?                @relation("ProductPriceUser", fields: [adminId], references: [id])
+  menuDetail                      Category?            @relation("menuDetailInProductPrice", fields: [menuId], references: [id])
+  productCityDetail               Cities?              @relation(fields: [productCityId], references: [id])
+  productCountryDetail            Countries?           @relation(fields: [productCountryId], references: [id])
+  productPrice_product            Product?             @relation(fields: [productId], references: [id])
+  productStateDetail              States?              @relation(fields: [productStateId], references: [id])
+  productPrice_productPriceReview ProductPriceReview[]
+  productPrice_productSellerImage ProductSellerImage[]
+}
+
+model ProductVariant {
+  id             Int  @id @default(autoincrement())
+  productId      Int?
+  productPriceId Int?
+
+  object Json?
+
+  status    Status    @default(ACTIVE)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  // productVariant_productPrice            ProductPrice?             @relation(fields: [productPriceId], references: [id])
+}
+
+model ProductSellCountry {
+  id             Int        @id @default(autoincrement())
+  productId      Int?
+  productPriceId Int?
+  countryName    String?
+  countryId      Int?
+  status         Status     @default(ACTIVE)
+  deletedAt      DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  countryDetail  Countries? @relation(fields: [countryId], references: [id])
+  productDetail  Product?   @relation(fields: [productId], references: [id])
+}
+
+model ProductSellState {
+  id             Int       @id @default(autoincrement())
+  productId      Int?
+  productPriceId Int?
+  stateName      String?
+  stateId        Int?
+  status         Status    @default(ACTIVE)
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  productDetail  Product?  @relation(fields: [productId], references: [id])
+  stateDetail    States?   @relation(fields: [stateId], references: [id])
+}
+
+model ProductSellCity {
+  id             Int       @id @default(autoincrement())
+  productId      Int?
+  productPriceId Int?
+  cityName       String?
+  cityId         Int?
+  status         Status    @default(ACTIVE)
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  cityDetail     Cities?   @relation(fields: [cityId], references: [id])
+  productDetail  Product?  @relation(fields: [productId], references: [id])
+}
+
+model ProductSellerImage {
+  id                              Int           @id @default(autoincrement())
+  productPriceId                  Int?
+  imageName                       String?
+  image                           String?
+  videoName                       String?
+  video                           String?
+  status                          Status        @default(ACTIVE)
+  deletedAt                       DateTime?
+  createdAt                       DateTime      @default(now())
+  updatedAt                       DateTime      @updatedAt
+  productSellerImage_productPrice ProductPrice? @relation(fields: [productPriceId], references: [id])
+}
+
+model ProductSpecification {
+  id                           Int       @id @default(autoincrement())
+  productId                    Int?
+  adminId                      Int?
+  specification                String?
+  status                       Status    @default(ACTIVE)
+  deletedAt                    DateTime?
+  createdAt                    DateTime  @default(now())
+  updatedAt                    DateTime  @updatedAt
+  label                        String?
+  productSpecification_product Product?  @relation(fields: [productId], references: [id])
+}
+
+model ProductShortDescription {
+  id                              Int       @id @default(autoincrement())
+  productId                       Int?
+  adminId                         Int?
+  shortDescription                String?
+  status                          Status    @default(ACTIVE)
+  deletedAt                       DateTime?
+  createdAt                       DateTime  @default(now())
+  updatedAt                       DateTime  @updatedAt
+  productShortDescription_product Product?  @relation(fields: [productId], references: [id])
+}
+
+model ProductTags {
+  id                  Int       @id @default(autoincrement())
+  productId           Int
+  tagId               Int
+  status              Status    @default(ACTIVE)
+  deletedAt           DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  productTags_product Product   @relation(fields: [productId], references: [id])
+  productTagsTag      Tags      @relation(fields: [tagId], references: [id])
+}
+
+model ProductImages {
+  id                    Int       @id @default(autoincrement())
+  productId             Int
+  image                 String?
+  video                 String?
+  status                Status    @default(ACTIVE)
+  deletedAt             DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  imageName             String?
+  videoName             String?
+  variant               Json?
+  productImages_product Product   @relation(fields: [productId], references: [id])
+}
+
+model SellerReward {
+  id               Int       @id @default(autoincrement())
+  productId        Int?
+  adminId          Int?
+  rewardPercentage Decimal?  @db.Decimal(8, 2)
+  minimumOrder     Int?
+  startTime        DateTime?
+  endTime          DateTime?
+  status           Status    @default(ACTIVE)
+  deletedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  rewardFixAmount  Decimal?  @db.Decimal(8, 2)
+  stock            Int?
+  productDetail    Product?  @relation(fields: [productId], references: [id])
+}
+
+model SharedLink {
+  id                    Int       @id @default(autoincrement())
+  sellerRewardId        Int?
+  productId             Int?
+  adminId               Int?
+  generatedLink         String?
+  linkGeneratedBy       Int?
+  myTotalSell           Int?
+  ordersPlaced          Int?
+  totalReward           Decimal?  @db.Decimal(8, 2)
+  status                Status    @default(ACTIVE)
+  deletedAt             DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  linkGeneratedByDetail User?     @relation("linkGeneratorDetail", fields: [linkGeneratedBy], references: [id])
+  productDetail         Product?  @relation(fields: [productId], references: [id])
+}
+
+model ProductReview {
+  id                    Int       @id @default(autoincrement())
+  userId                Int?
+  productId             Int?
+  status                Status    @default(ACTIVE)
+  title                 String?
+  description           String?
+  rating                Int?
+  deletedAt             DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  productReview_product Product?  @relation(fields: [productId], references: [id])
+  reviewByUserDetail    User?     @relation("ProductReviewUser", fields: [userId], references: [id])
+}
+
+model ProductPriceReview {
+  id                              Int           @id @default(autoincrement())
+  userId                          Int?
+  productPriceId                  Int?
+  productId                       Int?
+  status                          Status        @default(ACTIVE)
+  title                           String?
+  description                     String?
+  rating                          Int?
+  deletedAt                       DateTime?
+  createdAt                       DateTime      @default(now())
+  updatedAt                       DateTime      @updatedAt
+  adminId                         Int?
+  productPriceReview_productPrice ProductPrice? @relation(fields: [productPriceId], references: [id])
+  productPriceReview_user         User?         @relation("ProductPriceReviewUser", fields: [userId], references: [id])
+}
+
+model ProductQuestion {
+  id                          Int                     @id @default(autoincrement())
+  productId                   Int?
+  status                      Status                  @default(ACTIVE)
+  question                    String?
+  questionByuserId            Int?
+  answer                      String?
+  answerByuserId              Int?
+  deletedAt                   DateTime?
+  createdAt                   DateTime                @default(now())
+  updatedAt                   DateTime                @updatedAt
+  answerByuserIdDetail        User?                   @relation("ProductAnswerUser", fields: [answerByuserId], references: [id])
+  questionByuserIdDetail      User?                   @relation("questionByUser", fields: [questionByuserId], references: [id])
+  productQuestionAnswerDetail ProductQuestionAnswer[]
+}
+
+model ProductQuestionAnswer {
+  id                 Int              @id @default(autoincrement())
+  productId          Int?
+  status             Status           @default(ACTIVE)
+  productQuestionId  Int?
+  answer             String?
+  answerByuserId     Int?
+  deletedAt          DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  answerByUserDetail User?            @relation("answerByUser", fields: [answerByuserId], references: [id])
+  productQuestion    ProductQuestion? @relation(fields: [productQuestionId], references: [id])
+}
+
+model ProductDuplicateRfq {
+  id        Int       @id @default(autoincrement())
+  adminId   Int?
+  userId    Int?
+  productId Int?
+  status    Status    @default(ACTIVE)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model ProductDuplicateFactories {
+  id        Int       @id @default(autoincrement())
+  adminId   Int?
+  userId    Int?
+  productId Int?
+  status    Status    @default(ACTIVE)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model CustomizeProduct {
+  id                          Int                     @id @default(autoincrement())
+  sellerId                    Int?
+  buyerId                     Int?
+  productId                   Int?
+  status                      Status                  @default(ACTIVE)
+  note                        String?
+  deletedAt                   DateTime?
+  createdAt                   DateTime                @default(now())
+  updatedAt                   DateTime                @updatedAt
+  fromPrice                   Decimal?                @db.Decimal(8, 2)
+  toPrice                     Decimal?                @db.Decimal(8, 2)
+  productDetails              Product?                @relation(fields: [productId], references: [id])
+  customizeProductImageDetail CustomizeProductImage[]
+  factoriesCartDetail         FactoriesCart[]
+  factoriesRequest            FactoriesRequest[]
+}
+
+model CustomizeProductImage {
+  id                     Int               @id @default(autoincrement())
+  productId              Int?
+  customizeProductId     Int?
+  status                 Status            @default(ACTIVE)
+  link                   String?
+  linkType               String?
+  deletedAt              DateTime?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  customizeProductDetail CustomizeProduct? @relation(fields: [customizeProductId], references: [id])
+}
+
+model FactoriesCart {
+  id                     Int               @id @default(autoincrement())
+  userId                 Int?
+  deviceId               String?
+  customizeProductId     Int?
+  productId              Int?
+  quantity               Int?
+  status                 Status            @default(ACTIVE)
+  deletedAt              DateTime?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  customizeProductDetail CustomizeProduct? @relation(fields: [customizeProductId], references: [id])
+  productDetails         Product?          @relation(fields: [productId], references: [id])
+}
+
+model FactoriesRequest {
+  id                     Int               @id @default(autoincrement())
+  buyerId                Int?
+  sellerId               Int?
+  RequestNo              String?
+  customizeProductId     Int?
+  productId              Int?
+  quantity               Int?
+  status                 Status            @default(ACTIVE)
+  deletedAt              DateTime?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  address                String?
+  cc                     String?
+  city                   String?
+  country                String?
+  factoriesDate          DateTime?
+  firstName              String?
+  lastName               String?
+  phoneNumber            String?
+  postCode               String?
+  province               String?
+  fromPrice              Decimal?          @db.Decimal(8, 2)
+  toPrice                Decimal?          @db.Decimal(8, 2)
+  customizeProductDetail CustomizeProduct? @relation(fields: [customizeProductId], references: [id])
+}
+
+model RFQProduct {
+  id                 Int                @id @default(autoincrement())
+  productId          Int?
+  status             Status             @default(ACTIVE)
+  adminId            Int?
+  userId             Int?
+  type               rFqType            @default(P)
+  productNote        String?
+  rfqProductName     String?
+  deletedAt          DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  rfqProduct_rfqCart RFQCart[]
+  rfqProduct_product Product?           @relation(fields: [productId], references: [id])
+  rfqProductImage    RFQProductImages[]
+}
+
+model RFQProductImages {
+  id                         Int         @id @default(autoincrement())
+  rfqProductId               Int?
+  status                     Status      @default(ACTIVE)
+  imageName                  String?
+  image                      String?
+  deletedAt                  DateTime?
+  createdAt                  DateTime    @default(now())
+  updatedAt                  DateTime    @updatedAt
+  rfqProductImage_rfqProduct RFQProduct? @relation(fields: [rfqProductId], references: [id])
+}
+
+model LocationList {
+  id           Int       @id @default(autoincrement())
+  locationName String?
+  status       Status    @default(ACTIVE)
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Brand {
+  id            Int       @id @default(autoincrement())
+  brandName     String?
+  status        Status    @default(ACTIVE)
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  addedBy       Int?
+  brandType     String?
+  brandProducts Product[]
+}
+
+model CountryList {
+  id                  Int       @id @default(autoincrement())
+  countryName         String?
+  status              Status    @default(ACTIVE)
+  deletedAt           DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  countryListProducts Product[]
+}
+
+model Cart {
+  id                  Int                  @id @default(autoincrement())
+  userId              Int?
+  deviceId            String?
+  productId           Int?
+  serviceId           Int?
+  service             Service?             @relation(fields: [serviceId], references: [id])
+  quantity            Int?
+  cartType            CartType             @default(DEFAULT)
+  status              Status               @default(ACTIVE)
+  deletedAt           DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  productPriceId      Int?
+  sharedLinkId        Int?
+  object              Json?
+  productDetails      Product?             @relation(fields: [productId], references: [id])
+  productPriceDetails ProductPrice?        @relation(fields: [productPriceId], references: [id])
+  userDetails         User?                @relation(fields: [userId], references: [id])
+  cartServiceFeatures CartServiceFeature[]
+  cartProductServices CartProductService[]
+}
+
+model CartServiceFeature {
+  id               Int            @id @default(autoincrement())
+  cartId           Int
+  cart             Cart           @relation(fields: [cartId], references: [id])
+  quantity         Int
+  serviceFeatureId Int
+  serviceFeature   ServiceFeature @relation(fields: [serviceFeatureId], references: [id])
+}
+
+model CartProductService {
+  id              Int     @id @default(autoincrement())
+  productId       Int
+  product         Product @relation(fields: [productId], references: [id])
+  serviceId       Int
+  service         Service @relation(fields: [serviceId], references: [id])
+  cartId          Int
+  cart            Cart    @relation(fields: [cartId], references: [id])
+  relatedCartId   Int?
+  cartType        String? // PRODUCT, SERVICE
+  relatedCartType String? // PRODUCT, SERVICE
+}
+
+model RFQCart {
+  id                     Int          @id @default(autoincrement())
+  userId                 Int?
+  deviceId               String?
+  rfqProductId           Int?
+  quantity               Int?
+  rfqCartType            RFQCartType?
+  status                 Status       @default(ACTIVE)
+  deletedAt              DateTime?
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+  productId              Int?
+  offerPrice             Decimal?     @db.Decimal(8, 2)
+  note                   String?
+  offerPriceFrom         Decimal?     @db.Decimal(8, 2)
+  offerPriceTo           Decimal?     @db.Decimal(8, 2)
+  rfqCart_productDetails Product?     @relation(fields: [productId], references: [id])
+  rfqProductDetails      RFQProduct?  @relation(fields: [rfqProductId], references: [id])
+}
+
+model Order {
+  id                      Int         @id @default(autoincrement())
+  userId                  Int?
+  orderNo                 String?
+  paymentMethod           String?
+  totalPrice              Decimal?    @db.Decimal(10, 2)
+  actualPrice             Decimal?    @db.Decimal(10, 2)
+  deliveryCharge          Decimal?    @db.Decimal(10, 2)
+  orderStatus             OrderStatus @default(PENDING)
+  orderDate               DateTime?
+  orderType               OrderType   @default(DEFAULT)
+  couponCode              String?
+  deletedAt               DateTime?
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+  transactionId           Int?
+  totalCashbackToCustomer Decimal?    @db.Decimal(10, 2)
+  totalCustomerPay        Decimal?    @db.Decimal(10, 2)
+  totalDiscount           Decimal?    @db.Decimal(10, 2)
+  totalPlatformFee        Decimal?    @db.Decimal(10, 2)
+  paymobOrderId           String?
+
+  paymentType String? // DIRECT, ADVANCE
+
+  advanceAmount Decimal? @db.Decimal(10, 2)
+  dueAmount     Decimal? @db.Decimal(10, 2)
+
+  order_orderAddress  OrderAddress[]
+  order_orderProducts OrderProducts[]
+}
+
+model OrderSaveCardToken {
+  id             Int       @id @default(autoincrement())
+  paymobOrderId  Int?
+  saveCardObject Json?
+  token          String?
+  orderId        Int?
+  status         Status    @default(ACTIVE)
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model OrderShipping {
+  id                Int               @id @default(autoincrement())
+  orderId           Int?
+  sellerId          Int? // who owns the group of products
+  orderShippingType OrderShippingType
+  serviceId         Int? // if OrderShippingType = PLATFORM, then link to a Service
+  status            String // PENDING, SHIPPED, DELIVERED, etc.
+  shippingDate      DateTime?
+  shippingCharge    Decimal?          @db.Decimal(10, 2)
+  receipt           String?
+  fromTime          DateTime?
+  toTime            DateTime?
+  deletedAt         DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model OrderSeller {
+  id              Int       @id @default(autoincrement())
+  orderId         Int?
+  orderNo         String?
+  sellerOrderNo   String?
+  amount          Decimal?  @db.Decimal(10, 2)
+  sellerId        Int?
+  status          Status    @default(ACTIVE)
+  deletedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  purchasedAmount Decimal?  @db.Decimal(10, 2)
+}
+
+model OrderProducts {
+  id                        Int                   @id @default(autoincrement())
+  userId                    Int?
+  orderId                   Int?
+  productId                 Int?
+  serviceId                 Int?
+  service                   Service?              @relation(fields: [serviceId], references: [id])
+  serviceFeatures           Json?
+  salePrice                 Decimal?              @db.Decimal(10, 2)
+  purchasePrice             Decimal?              @db.Decimal(10, 2)
+  deletedAt                 DateTime?
+  createdAt                 DateTime              @default(now())
+  updatedAt                 DateTime              @updatedAt
+  status                    Status                @default(ACTIVE)
+  orderProductDate          DateTime?
+  orderProductType          OrderProductType      @default(PRODUCT)
+  orderProductStatus        OrderProductStatus    @default(PLACED)
+  orderQuantity             Int?
+  sellerId                  Int?
+  cancelReason              String?
+  orderNo                   String?
+  orderSellerId             Int?
+  sellerOrderNo             String?
+  productPriceId            Int?
+  breakdown                 Json?
+  cashbackToCustomer        Decimal?              @db.Decimal(10, 2)
+  customerPay               Decimal?              @db.Decimal(10, 2)
+  platformFee               Decimal?              @db.Decimal(10, 2)
+  sellerReceives            Decimal?              @db.Decimal(10, 2)
+  object                    Json?
+  orderShippingId           Int?
+  orderProductReceipt       String?
+  orderProduct_order        Order?                @relation(fields: [orderId], references: [id])
+  orderProduct_product      Product?              @relation(fields: [productId], references: [id])
+  orderProduct_productPrice ProductPrice?         @relation(fields: [productPriceId], references: [id])
+  sellerDetail              User?                 @relation("OrderProductsSeller", fields: [sellerId], references: [id])
+  orderProductServices      OrderProductService[]
+}
+
+model OrderProductService {
+  id                    Int           @id @default(autoincrement())
+  productId             Int
+  product               Product       @relation(fields: [productId], references: [id])
+  serviceId             Int
+  service               Service       @relation(fields: [serviceId], references: [id])
+  orderProductId        Int
+  orderProduct          OrderProducts @relation(fields: [orderProductId], references: [id])
+  relatedOrderProductId Int?
+  orderProductType      String?   // PRODUCT, SERVICE
+}
+
+model OrderAddress {
+  id                 Int         @id @default(autoincrement())
+  orderId            Int?
+  firstName          String?
+  lastName           String?
+  email              String?
+  cc                 String?
+  phone              String?
+  address            String?
+  city               String?
+  province           String?
+  country            String?
+  postCode           String?
+  addressType        AddressType @default(BILLING)
+  status             Status      @default(ACTIVE)
+  deletedAt          DateTime?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  cityId             Int?
+  countryId          Int?
+  stateId            Int?
+  town               String?
+  orderAddress_order Order?      @relation(fields: [orderId], references: [id])
+}
+
+model OrderEMI {
+  id                        Int       @id @default(autoincrement())
+  orderId                   Int?
+  emiInstallmentCount       Int?
+  emiInstallmentAmount      Decimal?  @db.Decimal(10, 2)
+  emiInstallmentAmountCents Int?
+  emiStartDate              DateTime?
+  emiInstallmentsPaid       Int?
+  emiStatus                 EmiStatus @default(ONGOING)
+  nextEmiDueDate            DateTime?
+  deletedAt                 DateTime?
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+}
+
+model DynamicForm {
+  id                              Int                   @id @default(autoincrement())
+  formData                        String?
+  formName                        String?
+  productId                       Int?
+  deletedAt                       DateTime?
+  createdAt                       DateTime              @default(now())
+  updatedAt                       DateTime              @updatedAt
+  status                          Status                @default(ACTIVE)
+  dynamicForm_dynamicFormCategory DynamicFormCategory[]
+  elements                        DynamicFormElement[]
+}
+
+model DynamicFormElement {
+  id        Int                  @id @default(autoincrement())
+  keyName   String?
+  label     String?
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  formId    Int
+  parentId  Int?
+  status    Status               @default(ACTIVE)
+  typeField String?
+  form      DynamicForm          @relation(fields: [formId], references: [id])
+  parent    DynamicFormElement?  @relation("ChildToParent", fields: [parentId], references: [id])
+  children  DynamicFormElement[] @relation("ChildToParent")
+}
+
+model DynamicFormCategory {
+  id               Int          @id @default(autoincrement())
+  formId           Int?
+  categoryId       Int?
+  status           Status       @default(ACTIVE)
+  deletedAt        DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  categoryLocation String?
+  categoryIdDetail Category?    @relation(fields: [categoryId], references: [id])
+  formIdDetail     DynamicForm? @relation(fields: [formId], references: [id])
+}
+
+model RfqQuoteAddress {
+  id                        Int         @id @default(autoincrement())
+  userId                    Int?
+  status                    Status      @default(ACTIVE)
+  firstName                 String?
+  lastName                  String?
+  phoneNumber               String?
+  cc                        String?
+  address                   String?
+  city                      String?
+  province                  String?
+  country                   String?
+  postCode                  String?
+  rfqDate                   DateTime?
+  deletedAt                 DateTime?
+  createdAt                 DateTime    @default(now())
+  updatedAt                 DateTime    @updatedAt
+  rfqQuoteAddress_rfqQuotes RfqQuotes[]
+}
+
+model RfqQuotes {
+  id                           Int                           @id @default(autoincrement())
+  buyerID                      Int?
+  rfqQuoteAddressId            Int?
+  status                       Status                        @default(ACTIVE)
+  deletedAt                    DateTime?
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime                      @updatedAt
+  rfqQuoteProductPriceRequests RfqQuoteProductPriceRequest[]
+  rfqQuotes_rfqQuoteAddress    RfqQuoteAddress?              @relation(fields: [rfqQuoteAddressId], references: [id])
+  rfqQuotesProducts            RfqQuotesProducts[]
+  rfqQuotes_rfqQuotesUsers     RfqQuotesUsers[]
+}
+
+model RfqQuotesProducts {
+  id                      Int                           @id @default(autoincrement())
+  rfqQuotesId             Int?
+  rfqProductId            Int?
+  status                  Status                        @default(ACTIVE)
+  deletedAt               DateTime?
+  createdAt               DateTime                      @default(now())
+  updatedAt               DateTime                      @updatedAt
+  offerPrice              Decimal?                      @db.Decimal(8, 2)
+  note                    String?
+  quantity                Int?
+  offerPriceFrom          Decimal?                      @db.Decimal(8, 2)
+  offerPriceTo            Decimal?                      @db.Decimal(8, 2)
+  rfqProductPriceRequests RfqQuoteProductPriceRequest[]
+  rfqProductDetails       Product?                      @relation(fields: [rfqProductId], references: [id])
+  rfqQuotesDetail         RfqQuotes?                    @relation(fields: [rfqQuotesId], references: [id])
+}
+
+model RfqQuotesUsers {
+  id                      Int                           @id @default(autoincrement())
+  status                  Status                        @default(ACTIVE)
+  rfqQuotesId             Int?
+  buyerID                 Int?
+  sellerID                Int?
+  offerPrice              Decimal?                      @db.Decimal(10, 2)
+  deletedAt               DateTime?
+  createdAt               DateTime                      @default(now())
+  updatedAt               DateTime                      @updatedAt
+  messagaes               Message[]
+  rfqProductPriceRequests RfqQuoteProductPriceRequest[]
+  buyerIDDetail           User?                         @relation("RfqQuotesUserBuyer", fields: [buyerID], references: [id])
+  rfqQuotesUser_rfqQuotes RfqQuotes?                    @relation(fields: [rfqQuotesId], references: [id])
+  sellerIDDetail          User?                         @relation("RfqQuotesUserSeller", fields: [sellerID], references: [id])
+}
+
+model Wishlist {
+  id                     Int       @id @default(autoincrement())
+  status                 Status    @default(ACTIVE)
+  userId                 Int?
+  productId              Int?
+  deletedAt              DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  wishlist_productDetail Product?  @relation(fields: [productId], references: [id])
+}
+
+model Room {
+  id           Int                @id @default(autoincrement())
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  creatorId    Int
+  rfqId        Int
+  messages     Message[]          @relation("RoomMessages")
+  creator      User               @relation("CreatedRooms", fields: [creatorId], references: [id])
+  participants RoomParticipants[] @relation("RoomParticipants")
+}
+
+model Message {
+  id                     Int                          @id @default(autoincrement())
+  content                String
+  status                 MessageStatus                @default(UNREAD)
+  createdAt              DateTime                     @default(now())
+  updatedAt              DateTime                     @updatedAt
+  rfqId                  Int
+  rfqQuotesUserId        Int?
+  userId                 Int
+  roomId                 Int
+  attachments            ChatAttachments[]
+  rfqQuotesUser          RfqQuotesUsers?              @relation(fields: [rfqQuotesUserId], references: [id])
+  room                   Room                         @relation("RoomMessages", fields: [roomId], references: [id])
+  user                   User                         @relation("UserMessages", fields: [userId], references: [id])
+  rfqProductPriceRequest RfqQuoteProductPriceRequest? @relation("MessageRfqProductPriceRequest")
+}
+
+model ChatAttachments {
+  id            Int              @id @default(autoincrement())
+  fileName      String
+  fileSize      Float
+  fileType      String
+  filePath      String
+  fileExtension String
+  status        AttachmentStatus @default(UPLOADING)
+  messageId     Int
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  uniqueId      String?          @unique
+  presignedUrl  String?
+  message       Message          @relation(fields: [messageId], references: [id])
+}
+
+model RfqQuoteProductPriceRequest {
+  id                Int                          @id @default(autoincrement())
+  rfqQuoteId        Int
+  rfqQuoteProductId Int
+  rfqQuotesUserId   Int
+  messageId         Int                          @unique
+  sellerId          Int?
+  buyerId           Int?
+  requestedById     Int
+  approvedById      Int?
+  rejectedById      Int?
+  requestedPrice    Float
+  status            RfqProductPriceRequestStatus @default(PENDING)
+  createdAt         DateTime                     @default(now())
+  updatedAt         DateTime                     @updatedAt
+  approvedBy        User?                        @relation("approvedByUser", fields: [approvedById], references: [id])
+  requestedBuyer    User?                        @relation("requestedBuyer", fields: [buyerId], references: [id])
+  message           Message                      @relation("MessageRfqProductPriceRequest", fields: [messageId], references: [id])
+  rejectedBy        User?                        @relation("rejectedByUser", fields: [rejectedById], references: [id])
+  requestedBy       User                         @relation("requestedByUser", fields: [requestedById], references: [id])
+  rfqQuotes         RfqQuotes                    @relation(fields: [rfqQuoteId], references: [id])
+  rfqQuoteProduct   RfqQuotesProducts            @relation(fields: [rfqQuoteProductId], references: [id])
+  rfqQuotesUser     RfqQuotesUsers               @relation(fields: [rfqQuotesUserId], references: [id])
+  requestedSeller   User?                        @relation("requestedSeller", fields: [sellerId], references: [id])
+}
+
+model RoomParticipants {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  roomId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  room      Room     @relation("RoomParticipants", fields: [roomId], references: [id])
+  user      User     @relation("UserRooms", fields: [userId], references: [id])
+}
+
+model CustomField {
+  id        Int       @id @default(autoincrement())
+  adminId   Int?
+  userId    Int?
+  productId Int?
+  formName  String?
+  formData  String?
+  status    Status    @default(ACTIVE)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model CustomFieldValue {
+  id        Int       @id @default(autoincrement())
+  adminId   Int?
+  userId    Int?
+  formId    Int?
+  keyName   String?
+  value     String?
+  status    Status    @default(ACTIVE)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Countries {
+  id                           Int                  @id @default(autoincrement())
+  sortname                     String?
+  name                         String?
+  phoneCode                    Int?
+  status                       Status               @default(ACTIVE)
+  createdAt                    DateTime             @default(now())
+  updatedAt                    DateTime             @updatedAt
+  deletedAt                    DateTime?
+  countries_feesCountry        FeesCountry[]
+  countries_feesLocation       FeesLocation[]
+  countries_productPrice       ProductPrice[]
+  countries_productSellCountry ProductSellCountry[]
+  countries_userAddress        UserAddress[]
+  services                     Service[]
+}
+
+model States {
+  id                     Int                @id @default(autoincrement())
+  name                   String?
+  countryId              Int?
+  status                 Status             @default(ACTIVE)
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+  deletedAt              DateTime?
+  state_feesLocation     FeesLocation[]
+  state_feesState        FeesState[]
+  state_productPrice     ProductPrice[]
+  state_productSellState ProductSellState[]
+  state_userAddress      UserAddress[]
+  services               Service[]
+}
+
+model Cities {
+  id                   Int               @id @default(autoincrement())
+  name                 String?
+  stateId              Int?
+  status               Status            @default(ACTIVE)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  deletedAt            DateTime?
+  city_feesCity        FeesCity[]
+  city_feesLocation    FeesLocation[]
+  city_productPrice    ProductPrice[]
+  city_productSellCity ProductSellCity[]
+  city_userAddress     UserAddress[]
+  servicesFrom         Service[]         @relation("Service_fromCity")
+  servicesTo           Service[]         @relation("Service_toCity")
+  servicesInRange      Service[]         @relation("Service_rangeCity")
+}
+
+model PaymentErrorLog {
+  id              Int       @id @default(autoincrement())
+  userId          Int?
+  paymentIntentId String?
+  payload         Json?
+  location        String?
+  errorMessage    String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+}
+
+model AdminPermission {
+  id                  Int                   @id @default(autoincrement())
+  name                String?
+  addedBy             Int?
+  status              Status                @default(ACTIVE)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime?             @updatedAt
+  deletedAt           DateTime?
+  adminRolePermission AdminRolePermission[]
+}
+
+model AdminRole {
+  id                  Int                   @id @default(autoincrement())
+  adminRoleName       String?
+  addedBy             Int?
+  status              Status                @default(ACTIVE)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime?             @updatedAt
+  deletedAt           DateTime?
+  adminMemberDetail   AdminMember[]
+  adminRolePermission AdminRolePermission[]
+  user                User[]
+}
+
+model AdminRolePermission {
+  id                    Int              @id @default(autoincrement())
+  adminRoleId           Int?
+  adminPermissionId     Int?
+  status                Status           @default(ACTIVE)
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime?        @updatedAt
+  deletedAt             DateTime?
+  adminPermissionDetail AdminPermission? @relation(fields: [adminPermissionId], references: [id])
+  adminRoleDetail       AdminRole?       @relation(fields: [adminRoleId], references: [id])
+}
+
+model AdminMember {
+  id             Int        @id @default(autoincrement())
+  userId         Int?
+  adminRoleId    Int?
+  addedBy        Int?
+  status         Status     @default(ACTIVE)
+  deletedAt      DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  adminRolDetail AdminRole? @relation(fields: [adminRoleId], references: [id])
+  userDetail     User?      @relation("subAdmin", fields: [userId], references: [id])
+}
+
+model HelpCenter {
+  id         Int       @id @default(autoincrement())
+  userId     Int?
+  userEmail  String?
+  query      String?
+  response   String?
+  status     Status    @default(ACTIVE)
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  userDetail User?     @relation("helpCenterUserDetail", fields: [userId], references: [id])
+}
+
+model TransactionPaymob {
+  id                Int     @id @default(autoincrement())
+  userId            Int?
+  orderId           Int?
+  transactionStatus String? // INCOMPLETE, PENDING, SUCCESS, FAILED
+
+  paymobTransactionId String?
+  amountCents         Int?
+
+  success         Boolean?
+  paymobObject    Json?
+  merchantOrderId Int?
+  paymobOrderId   Int?
+  transactionType String? // DIRECT, ADVANCE, DUE, PAYMENTLINK
+  type            String?
+  amount          Decimal? @db.Decimal(10, 2)
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Service {
+  id             Int           @id @default(autoincrement())
+  workingDays    String
+  offDays        String?
+  renewEveryWeek Boolean       @default(false)
+  oneTime        Boolean       @default(false)
+  openTime       DateTime?     @db.Timestamp()
+  closeTime      DateTime?     @db.Timestamp()
+  breakTimeFrom  DateTime?     @db.Timestamp()
+  breakTimeTo    DateTime?     @db.Timestamp()
+  shippingType   ShippingType?
+  stateId        Int?
+  state          States?       @relation(fields: [stateId], references: [id])
+  countryId      Int?
+  country        Countries?    @relation(fields: [countryId], references: [id])
+  fromCityId     Int?
+  fromCity       Cities?       @relation("Service_fromCity", fields: [fromCityId], references: [id])
+  toCityId       Int?
+  toCity         Cities?       @relation("Service_toCity", fields: [toCityId], references: [id])
+
+  rangeCityId Int?
+  rangeCity   Cities? @relation("Service_rangeCity", fields: [rangeCityId], references: [id])
+
+  serviceName          String
+  serviceType          ServiceType
+  images               ServiceImage[]
+  description          String?
+  eachCustomerTime     Int?
+  customerPerPeiod     Int?
+  serviceConfirmType   ServiceConfirmType?
+  serviceFor           ServiceFor?
+  categoryId           Int
+  category             Category              @relation(fields: [categoryId], references: [id])
+  sellerId             Int
+  seller               User                  @relation(fields: [sellerId], references: [id])
+  categoryLocation     String?
+  serviceTags          ServiceTag[]
+  status               Status                @default(ACTIVE)
+  deletedAt            DateTime?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  serviceFeatures      ServiceFeature[]
+  carts                Cart[]
+  cartProductServices  CartProductService[]
+  orderProducts        OrderProducts[]
+  orderProductServices OrderProductService[]
+}
+
+model ServiceTag {
+  id        Int       @id @default(autoincrement())
+  serviceId Int
+  tagId     Int
+  tag       Tags      @relation(fields: [tagId], references: [id])
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  service   Service   @relation(fields: [serviceId], references: [id])
+}
+
+model ServiceFeature {
+  id                  Int                  @id @default(autoincrement())
+  serviceId           Int
+  service             Service              @relation(fields: [serviceId], references: [id])
+  name                String
+  serviceCostType     ServiceCostType
+  serviceCost         Decimal
+  cartServiceFeatures CartServiceFeature[]
+}
+
+model ServiceImage {
+  id        Int      @id @default(autoincrement())
+  url       String
+  fileType  FileType
+  fileName  String
+  serviceId Int
+  service   Service  @relation(fields: [serviceId], references: [id])
+}
+
+enum OrderProductType {
+  PRODUCT
+  SERVICE
+}
+
+enum FileType {
+  IMAGE
+  VIDEO
+}
+
+enum ShippingType {
+  DIRECTION
+  RANG
+}
+
+enum ServiceType {
+  BOOKING
+  MOVING
+}
+
+enum ServiceConfirmType {
+  AUTO
+  MANUAL
+}
+
+enum ServiceCostType {
+  FLAT
+  HOURLY
+}
+
+enum ServiceFor {
+  OWNER
+  EVERYONE
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  DELETE
+  HIDDEN
+}
+
+enum AttachmentStatus {
+  UPLOADED
+  UPLOADING
+  FAILED
+  DELETED
+}
+
+enum MessageStatus {
+  UNREAD
+  READ
+  DELETED
+}
+
+enum RfqProductPriceRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum TypeTrader {
+  BUYER
+  FREELANCER
+  COMPANY
+  MEMBER
+  ADMINMEMBER
+}
+
+enum UserType {
+  ADMIN
+  USER
+  SUBADMIN
+}
+
+enum LoginType {
+  MANUAL
+  SOCIAL
+  FACEBOOK
+  GOOGLE
+}
+
+enum StatusYesNO {
+  YES
+  NO
+}
+
+enum ProductType {
+  P
+  R
+  F
+}
+
+enum TypeOfProduct {
+  BRAND
+  SPAREPART
+  OWNBRAND
+}
+
+enum TypeProduct {
+  VENDORLOCAL
+  BRAND
+}
+
+enum ConsumerType {
+  CONSUMER
+  VENDORS
+  EVERYONE
+}
+
+enum SellType {
+  NORMALSELL
+  BUYGROUP
+  OTHERS
+  EVERYONE
+}
+
+enum rFqType {
+  P
+  R
+}
+
+enum CartType {
+  DEFAULT
+  SERVICE
+}
+
+enum RFQCartType {
+  DEFAULT
+  P
+  R
+}
+
+enum OrderType {
+  DEFAULT
+  SERVICE
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  COMPLETE
+}
+
+enum OrderProductStatus {
+  CANCELLED
+  CONFIRMED
+  SHIPPED
+  OFD
+  DELIVERED
+  RECEIVED
+  PLACED
+}
+
+enum AddressType {
+  BILLING
+  SHIPPING
+}
+
+enum EmiStatus {
+  STOPPED
+  ONGOING
+  COMPLETED
+}
+
+enum OrderShippingType {
+  PICKUP
+  SELLERDROP
+  THIRDPARTY
+  PLATFORM
+}

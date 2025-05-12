@@ -1,0 +1,135 @@
+.allaccountsTable{
+    .organizationTd{
+        a{
+            color: #022335;
+        }
+        
+    }
+    .subsciptionExpireTd{
+        div{
+            display: inline-flex;
+            align-items: center;
+            img{
+                margin-right: 12px;
+            }
+        }        
+    }
+}
+
+.createNewAccountPage{
+    min-height: calc(100vh - 110px);
+    padding: 19px 23px;
+    .createNewAccountInner{
+        background: #FFFFFF;
+        box-shadow: 0px 3px 8px rgba(21, 28, 53, 0.04);
+        border-radius: 5px;
+        padding: 43px;
+        @media (max-width: 1100px){
+            padding: 35px 20px;
+        }
+        @media (max-width: 991px){
+            padding: 35px 10px;
+        }
+        h1{
+            font-style: normal;
+            font-weight: 600;
+            font-size: 28px;
+            line-height: 40px;
+            color: #1B2733;
+            text-align: center;
+        }
+        form{
+            padding: 32px 0 0;
+            width: 100%;
+            max-width: 790px;
+            margin: auto;
+            .formGroup{
+                margin: 0 0 26px;
+                label{
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 16px;
+                    line-height: 24px;
+                    color: #637282;
+                    margin: 0 0 11px;
+                }
+                .form-control{
+                    border: 1px solid #CED4DA;
+                    &:focus{
+                        border-color: #022335;
+                    }
+                }
+
+                .btn_genaratePass {
+                    background: #022335;
+                    width: 100%;
+                    max-width: 180px;
+                    height: 40px;
+                    margin-top: 42px;
+                    font-size: 14px;
+                    line-height: 22px;
+                    border-radius: 5px;
+                    color: #FFFFFF;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    text-align: center;
+                }
+            }
+            h4{
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 40px;
+                color: #000000;
+                margin: 0 0 4px;
+                
+            }
+            .fullBtn{
+                max-width: 346px;
+                margin: 10px auto 0;
+            }
+        }
+        
+    }
+}
+
+.toggle-btn-with-label {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 5px;
+
+    @media (max-width: 575px) {
+        margin-top: 4px;
+    }
+
+    .left-toggle {
+        flex: 0 0 auto;
+        padding: 8px 0 0;
+    }
+
+    .rg-toggle-text {
+        padding-left: 28px;
+        padding-top: 4.5px;
+
+        @media (max-width: 575px) {
+            padding-left: 16px;
+        }
+
+        &.pl15 {
+            padding-left: 15px;
+
+            @media (max-width: 575px) {
+                padding-left: 12px;
+            }
+        }
+
+        label {
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 24px;
+            color: #000000;
+
+        }
+    }
+}
